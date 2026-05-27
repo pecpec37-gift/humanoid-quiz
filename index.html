@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤖 ヒューマノイドロボットクイズ道場</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Noto+Sans+JP:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://pecpec37-gift.github.io/portal/stamp.js"></script>
+<style>
+:root{
+  --bg:#04080f;--bg2:#070e1a;--surface:#0a1525;--surface2:#0f1f35;
+  --border:rgba(59,130,246,0.2);
+  --blue:#1d4ed8;--blue2:#3b82f6;--blue3:#93c5fd;
+  --cyan:#06b6d4;--cyan2:#22d3ee;--cyan3:#a5f3fc;
+  --violet:#7c3aed;--violet2:#a78bfa;
+  --green:#10b981;--red:#ef4444;
+  --gold:#f59e0b;--gold2:#fde68a;
+  --text:#e8f4ff;--text2:rgba(232,244,255,0.7);--text3:rgba(232,244,255,0.38);
+  --radius:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 5% 5%,rgba(29,78,216,0.12) 0%,transparent 45%),radial-gradient(ellipse at 95% 95%,rgba(124,58,237,0.1) 0%,transparent 45%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(59,130,246,0.012) 60px,rgba(59,130,246,0.012) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(59,130,246,0.012) 60px,rgba(59,130,246,0.012) 61px);pointer-events:none;z-index:0;}
+.screen{display:none;position:relative;z-index:1;}.screen.active{display:block;}
+#screen-top{min-height:100vh;}
+.top-hero{background:linear-gradient(160deg,#0a1830 0%,#04080f 55%,#020508 100%);padding:52px 24px 44px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.top-hero::before{content:'🤖';position:absolute;right:-10px;bottom:-20px;font-size:200px;opacity:0.04;pointer-events:none;}
+.top-hero::after{content:'⚙️';position:absolute;left:10px;top:10px;font-size:120px;opacity:0.035;pointer-events:none;}
+.top-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.22em;color:var(--cyan2);text-transform:uppercase;margin-bottom:12px;}
+.top-title{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:clamp(28px,6vw,54px);line-height:1.1;color:var(--text);margin-bottom:8px;}
+.top-title span{color:var(--cyan3);}
+.top-sub{font-size:13px;color:var(--text2);letter-spacing:0.06em;margin-bottom:28px;}
+.top-rule{display:inline-block;background:rgba(6,182,212,0.07);border:1px solid rgba(6,182,212,0.2);border-radius:6px;padding:14px 20px;text-align:left;font-size:12px;line-height:2;color:var(--text2);}
+.top-rule strong{color:var(--cyan3);}
+.genres-wrap{max-width:920px;margin:0 auto;padding:32px 20px 20px;}
+.genres-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.2em;color:var(--text3);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.genres-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.genres-hint{font-size:12px;color:var(--cyan3);background:rgba(6,182,212,0.07);border:1px solid rgba(6,182,212,0.18);border-radius:4px;padding:8px 14px;margin-bottom:20px;text-align:center;letter-spacing:0.04em;}
+.genres-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:24px;}
+.genre-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 18px;cursor:pointer;transition:transform 0.12s,box-shadow 0.12s,border-color 0.12s;position:relative;overflow:hidden;}
+.genre-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,182,212,0.07),transparent);opacity:0;transition:opacity 0.15s;}
+.genre-card:hover{transform:translateY(-3px);box-shadow:0 0 24px rgba(6,182,212,0.15),0 10px 30px rgba(0,0,0,0.5);border-color:rgba(34,211,238,0.5);}
+.genre-card:hover::before{opacity:1;}
+.genre-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:6px 6px 0 0;}
+.genre-icon{font-size:30px;line-height:1;margin-bottom:8px;display:block;}
+.genre-name{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:16px;margin-bottom:4px;color:var(--text);}
+.genre-desc{font-size:11px;color:var(--text3);margin-bottom:4px;line-height:1.6;}
+.genre-count{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;}
+.genre-start{position:absolute;top:14px;right:14px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--cyan2);opacity:0;transition:opacity 0.15s;}
+.genre-card:hover .genre-start{opacity:1;}
+.ranking-btn-wrap{text-align:center;padding:8px 0 36px;}
+.ranking-btn{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.12em;padding:10px 24px;background:none;border:1px solid var(--border);color:var(--text3);border-radius:3px;cursor:pointer;transition:all 0.15s;}
+.ranking-btn:hover{border-color:var(--gold2);color:var(--gold2);}
+#screen-intro{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;}
+#screen-intro.active{display:flex;}
+.intro-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 28px;width:100%;max-width:420px;text-align:center;}
+.intro-icon{font-size:52px;margin-bottom:10px;display:block;}
+.intro-name{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:24px;margin-bottom:4px;color:var(--cyan3);}
+.intro-desc{font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.7;}
+.intro-rule{font-size:12px;line-height:1.9;color:var(--text2);text-align:left;background:rgba(6,182,212,0.06);border-radius:6px;padding:12px 14px;margin-bottom:20px;}
+.intro-rule strong{color:var(--cyan3);}
+.name-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.18em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;text-align:left;}
+.name-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:14px;margin-bottom:16px;outline:none;transition:border-color 0.15s;}
+.name-input:focus{border-color:var(--cyan2);}
+.name-input::placeholder{color:var(--text3);}
+.start-btn{width:100%;padding:14px;background:var(--blue);color:#fff;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:16px;border:none;border-radius:6px;cursor:pointer;transition:background 0.15s,transform 0.1s;letter-spacing:0.04em;}
+.start-btn:hover{background:var(--blue2);}
+.start-btn:active{transform:scale(0.98);}
+.back-link{margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);cursor:pointer;transition:color 0.15s;background:none;border:none;}
+.back-link:hover{color:var(--text);}
+#screen-quiz{min-height:100vh;}
+.quiz-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:10;}
+.quiz-progress{flex:1;height:2px;background:rgba(6,182,212,0.12);border-radius:2px;overflow:hidden;min-width:60px;}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet2));border-radius:2px;transition:width 0.3s;}
+.quiz-qnum{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);white-space:nowrap;letter-spacing:0.08em;}
+.quiz-score{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--cyan3);white-space:nowrap;}
+.quiz-timer-wrap{display:flex;align-items:center;gap:5px;}
+.quiz-timer{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:22px;color:var(--cyan3);min-width:40px;text-align:right;transition:color 0.3s;}
+.quiz-timer.danger{color:#ef4444;animation:pulse 0.5s infinite alternate;}
+@keyframes pulse{from{opacity:1;}to{opacity:0.5;}}
+.quiz-timer-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:0.1em;}
+.quiz-body{max-width:640px;margin:0 auto;padding:28px 20px 40px;}
+.quiz-type-badge{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.16em;padding:3px 10px;border-radius:3px;display:inline-block;margin-bottom:14px;text-transform:uppercase;}
+.quiz-type-badge.type-4{background:rgba(6,182,212,0.12);color:var(--cyan2);}
+.quiz-type-badge.type-ox{background:rgba(16,185,129,0.12);color:#34d399;}
+.quiz-q{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:700;font-size:clamp(15px,3.5vw,19px);line-height:1.7;margin-bottom:22px;color:var(--text);}
+.choices{display:flex;flex-direction:column;gap:10px;}
+.choice-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px;text-align:left;font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--text);cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:10px;}
+.choice-btn:hover:not(:disabled){background:var(--surface2);border-color:rgba(34,211,238,0.45);transform:translateX(3px);}
+.choice-btn:disabled{cursor:default;}
+.choice-btn.correct{background:rgba(16,185,129,0.12);border-color:#10b981;color:#34d399;}
+.choice-btn.wrong{background:rgba(239,68,68,0.1);border-color:#ef4444;color:#f87171;}
+.choice-label{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);min-width:18px;flex-shrink:0;}
+.ox-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ox-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 16px;font-size:36px;cursor:pointer;transition:all 0.12s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;}
+.ox-btn span{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;}
+.ox-btn:hover:not(:disabled){transform:scale(1.03);border-color:rgba(34,211,238,0.45);}
+.ox-btn:disabled{cursor:default;}
+.ox-btn.correct{background:rgba(16,185,129,0.12);border-color:#10b981;}
+.ox-btn.wrong{background:rgba(239,68,68,0.1);border-color:#ef4444;}
+.feedback-bar{margin-top:14px;padding:12px 16px;border-radius:6px;font-size:13px;font-weight:700;opacity:0;transition:opacity 0.2s;min-height:44px;}
+.feedback-bar.show{opacity:1;}
+.feedback-bar.ok{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.28);}
+.feedback-bar.ng{background:rgba(239,68,68,0.08);color:#f87171;border:1px solid rgba(239,68,68,0.22);}
+.next-btn{margin-top:14px;width:100%;padding:12px;background:var(--blue);color:#fff;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:15px;border:none;border-radius:6px;cursor:pointer;transition:background 0.15s;display:none;}
+.next-btn.show{display:block;}
+.next-btn:hover{background:var(--blue2);}
+#screen-result{min-height:100vh;display:none;flex-direction:column;align-items:center;padding:40px 20px 60px;}
+#screen-result.active{display:flex;}
+.result-box{width:100%;max-width:520px;}
+.result-genre{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.2em;color:var(--text3);text-transform:uppercase;margin-bottom:8px;text-align:center;}
+.result-score-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px;text-align:center;margin-bottom:20px;}
+.result-medal{font-size:48px;margin-bottom:8px;display:block;}
+.result-score{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:64px;line-height:1;color:var(--cyan3);}
+.result-score-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.16em;color:var(--text3);margin-bottom:16px;text-transform:uppercase;}
+.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;}
+.result-stat{background:var(--bg2);border-radius:6px;padding:12px 8px;text-align:center;}
+.result-stat-val{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:24px;color:var(--cyan3);}
+.result-stat-val.green{color:#34d399;}
+.result-stat-val.gold{color:var(--gold2);}
+.result-stat-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--text3);margin-top:2px;}
+.result-actions{display:flex;gap:10px;margin-bottom:24px;}
+.result-btn{flex:1;padding:12px;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:700;font-size:14px;border-radius:6px;cursor:pointer;transition:all 0.15s;}
+.result-btn-primary{background:var(--blue);color:#fff;border:none;}
+.result-btn-primary:hover{background:var(--blue2);}
+.result-btn-secondary{background:none;color:var(--text2);border:1px solid var(--border);}
+.result-btn-secondary:hover{border-color:var(--cyan2);color:var(--cyan2);}
+.wrong-section{width:100%;max-width:520px;}
+.wrong-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.18em;color:var(--text3);text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.wrong-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:10px;}
+.wrong-item-num{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--text3);margin-bottom:6px;}
+.wrong-item-q{font-size:14px;line-height:1.6;color:var(--text);margin-bottom:10px;font-weight:700;}
+.wrong-item-ans{display:flex;align-items:flex-start;gap:8px;font-size:13px;}
+.wrong-item-ans-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green);background:rgba(16,185,129,0.1);padding:2px 7px;border-radius:2px;white-space:nowrap;margin-top:1px;}
+.wrong-item-ans-text{color:#34d399;line-height:1.5;}
+.portal-back{display:block;text-align:center;margin-top:28px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:0.1em;color:var(--text3);text-decoration:none;padding:10px 20px;border:1px solid var(--border);border-radius:3px;transition:all 0.15s;}
+.portal-back:hover{border-color:var(--cyan2);color:var(--cyan2);}
+#screen-ranking{min-height:100vh;padding:40px 20px 60px;}
+.ranking-wrap{max-width:600px;margin:0 auto;}
+.ranking-top{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.ranking-title{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:22px;color:var(--gold2);flex:1;}
+.ranking-back{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:3px;padding:6px 14px;cursor:pointer;transition:all 0.15s;}
+.ranking-back:hover{border-color:var(--gold2);color:var(--gold2);}
+.ranking-tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-bottom:20px;border-bottom:1px solid var(--border);}
+.ranking-tabs::-webkit-scrollbar{display:none;}
+.ranking-tab{flex-shrink:0;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.1em;padding:10px 12px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.ranking-tab.active{color:var(--cyan2);border-bottom-color:var(--cyan2);}
+.ranking-list{display:flex;flex-direction:column;gap:6px;}
+.ranking-empty{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);text-align:center;padding:32px;letter-spacing:0.1em;}
+.ranking-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 16px;}
+.ranking-row.top1{border-color:rgba(245,158,11,0.5);background:rgba(245,158,11,0.05);}
+.ranking-row.top2{border-color:rgba(200,200,200,0.25);}
+.ranking-row.top3{border-color:rgba(180,100,30,0.3);}
+.ranking-pos{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:18px;min-width:28px;color:var(--text3);}
+.ranking-pos.gold{color:#f59e0b;}.ranking-pos.silver{color:#9ca3af;}.ranking-pos.bronze{color:#b45309;}
+.ranking-name{flex:1;font-size:14px;font-weight:700;color:var(--text);}
+.ranking-score{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:20px;color:var(--cyan3);}
+.ranking-date{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-left:6px;}
+.ranking-del{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 8px;margin-top:12px;font-family:'Share Tech Mono',monospace;letter-spacing:0.08em;transition:color 0.15s;}
+.ranking-del:hover{color:#ef4444;}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg2);color:var(--cyan3);font-family:'Share Tech Mono',monospace;font-size:12px;padding:10px 20px;border-radius:6px;border:1px solid var(--cyan);z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.portal-fixed-btn{position:fixed;bottom:20px;left:20px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(4,8,15,0.92);color:var(--cyan3);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:0.08em;border-radius:4px;border:1px solid rgba(6,182,212,0.35);text-decoration:none;backdrop-filter:blur(6px);box-shadow:0 4px 16px rgba(0,0,0,0.5);transition:all 0.15s;white-space:nowrap;}
+.portal-fixed-btn:hover{background:rgba(4,8,15,0.98);border-color:rgba(34,211,238,0.7);transform:translateY(-1px);}
+@media(max-width:480px){.genres-grid{grid-template-columns:1fr 1fr;}.result-actions{flex-direction:column;}.portal-fixed-btn{bottom:14px;left:14px;padding:8px 14px;font-size:11px;}}
+</style>
+</head>
+<body>
+<div id="screen-top" class="screen active">
+  <div class="top-hero">
+    <div class="top-eyebrow">Tommy's Quiz Dojo // HUMANOID ROBOTICS</div>
+    <h1 class="top-title">ヒューマノイド<span>ロボット</span>クイズ道場</h1>
+    <p class="top-sub">近未来を変える人型ロボットの技術・企業・AI・社会を学ぼう！</p>
+    <div class="top-rule">📋 制限時間：<strong>120秒</strong> ／ 各ジャンル<strong>10問</strong>ランダム出題<br>✅ 正解 → <strong>+10点</strong> ＋ 時間+5秒<br>❌ 不正解 → 減点なし ＋ 時間−5秒のペナルティ<br>🏆 残り時間がそのままボーナス点に加算！<br>【4択】と【○×】がランダムにミックスされます</div>
+  </div>
+  <div class="genres-wrap">
+    <div class="genres-label">// ジャンルを選んでスタート</div>
+    <div class="genres-hint">👆 カードをクリックするとすぐに始められます</div>
+    <div class="genres-grid" id="genres-grid"></div>
+    <div class="ranking-btn-wrap"><button class="ranking-btn" onclick="showRanking()">🏆 スコアランキングを見る</button></div>
+  </div>
+</div>
+<div id="screen-intro" class="screen">
+  <div class="intro-box">
+    <span class="intro-icon" id="intro-icon"></span>
+    <div class="intro-name" id="intro-name"></div>
+    <div class="intro-desc" id="intro-desc"></div>
+    <div class="intro-rule">制限時間：<strong>120秒</strong> ／ 10問ランダム出題（4択＋○×ミックス）<br>✅ 正解 → <strong>+10点</strong> ＋ 時間+5秒<br>❌ 不正解 → 減点なし ＋ 時間−5秒<br>🏆 残り時間がそのままボーナス点に加算</div>
+    <div class="name-label">// Your Name（ランキングに表示）</div>
+    <input class="name-input" id="name-input" type="text" maxlength="20" placeholder="プレーヤー名（任意）">
+    <button class="start-btn" onclick="startGame()">スタート ▶</button>
+    <button class="back-link" onclick="showScreen('screen-top')">← 戻る</button>
+  </div>
+</div>
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-qnum" id="quiz-qnum">Q1 / 10</div>
+    <div class="quiz-progress"><div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div></div>
+    <div class="quiz-score" id="quiz-score">0 pt</div>
+    <div class="quiz-timer-wrap"><div class="quiz-timer" id="quiz-timer">120</div><div class="quiz-timer-label">秒</div></div>
+  </div>
+  <div class="quiz-body">
+    <div class="quiz-type-badge" id="quiz-type-badge">4択</div>
+    <div class="quiz-q" id="quiz-q"></div>
+    <div id="quiz-choices"></div>
+    <div class="feedback-bar" id="feedback-bar"></div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">次の問題へ →</button>
+  </div>
+</div>
+<div id="screen-result" class="screen">
+  <div class="result-box">
+    <div class="result-genre" id="result-genre"></div>
+    <div class="result-score-wrap">
+      <span class="result-medal" id="result-medal">🏆</span>
+      <div class="result-score" id="result-score">0</div>
+      <div class="result-score-label">TOTAL SCORE</div>
+      <div class="result-stats">
+        <div class="result-stat"><div class="result-stat-val green" id="result-correct">0</div><div class="result-stat-label">正解数</div></div>
+        <div class="result-stat"><div class="result-stat-val" id="result-wrong">0</div><div class="result-stat-label">不正解数</div></div>
+        <div class="result-stat"><div class="result-stat-val gold" id="result-bonus">+0</div><div class="result-stat-label">時間ボーナス</div></div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="result-btn result-btn-primary" onclick="retryGame()">もう一度挑戦</button>
+      <button class="result-btn result-btn-secondary" onclick="showScreen('screen-top')">← トップへ</button>
+    </div>
+  </div>
+  <div class="wrong-section" id="wrong-section"></div>
+  <a class="portal-back" href="https://pecpec37-gift.github.io/portal/">← とみやんのゲームランド</a>
+</div>
+<div id="screen-ranking" class="screen">
+  <div class="ranking-wrap">
+    <div class="ranking-top"><div class="ranking-title">🏆 スコアランキング</div><button class="ranking-back" onclick="showScreen('screen-top')">← トップへ</button></div>
+    <div class="ranking-tabs" id="ranking-tabs"></div>
+    <div class="ranking-list" id="ranking-list"></div>
+    <div style="text-align:center;margin-top:16px;"><button class="ranking-del" onclick="deleteRanking()">🗑️ このジャンルの記録を削除</button></div>
+  </div>
+</div>
+<div id="toast"></div>
+<a class="portal-fixed-btn" href="https://pecpec37-gift.github.io/portal/">← とみやんのゲームランド</a>
+<script>
+const GENRES=[
+  {id:'robots',   icon:'🤖', name:'主要ロボット・企業',  color:'#3b82f6', desc:'Atlas・Optimus・Figure・ASIMO・各社動向'},
+  {id:'technology',icon:'⚙️',name:'技術・メカニズム',    color:'#06b6d4', desc:'アクチュエータ・センサー・制御・構造'},
+  {id:'ai',       icon:'🧠', name:'AI・制御技術',        color:'#7c3aed', desc:'強化学習・LLM・模倣学習・基盤モデル'},
+  {id:'industry', icon:'🏭', name:'産業・活用分野',      color:'#16a34a', desc:'工場・物流・医療・宇宙・家庭・介護'},
+  {id:'society',  icon:'🌍', name:'社会・倫理・未来',    color:'#dc2626', desc:'雇用・安全規制・プライバシー・倫理'},
+  {id:'history',  icon:'📜', name:'歴史・発展',          color:'#d97706', desc:'ロボット語源・ASIMO・DARPAチャレンジ'},
+];
+const DB={
+robots:[
+  {type:'4',q:'Boston Dynamicsが開発した二足歩行ヒューマノイドロボットの名前はどれか？',c:['Spot','Figure 01','Optimus','Atlas'],a:3},
+  {type:'ox',q:'Tesla（テスラ）が開発したヒューマノイドロボットの名前は「Optimus」だ。',a:true},
+  {type:'4',q:'Honda（ホンダ）が開発した世界的に有名なヒューマノイドロボットはどれか？',c:['NAO','ASIMO','HRP-5P','Pepper'],a:1},
+  {type:'ox',q:'ASIMOはHondaが2000年に発表したヒューマノイドロボットだ。',a:true},
+  {type:'4',q:'Figure AIが開発したヒューマノイドロボットの名前はどれか？',c:['Figure 01','Unitree H1','Atlas','Digit'],a:0},
+  {type:'ox',q:'Boston Dynamicsの「Atlas」は世界で最も運動能力が高いヒューマノイドロボットの一つとして知られる。',a:true},
+  {type:'4',q:'Agility Roboticsが開発した物流向けヒューマノイドロボットはどれか？',c:['Spot','Handle','Stretch','Digit'],a:3},
+  {type:'ox',q:'SoftBank（ソフトバンク）が販売するコミュニケーションロボット「Pepper」はヒューマノイドロボットの一種だ。',a:true},
+  {type:'4',q:'中国のUnitree Roboticsが開発したヒューマノイドロボットはどれか？',c:['CyberOne','Unitree H1','Walker X','Tien Kung'],a:1},
+  {type:'ox',q:'Appleはヒューマノイドロボットの開発プロジェクトを進めているという報道がある（2024年時点）。',a:true},
+  {type:'4',q:'Xiaomi（シャオミ）が発表したヒューマノイドロボットの名前はどれか？',c:['CyberDog','CyberOne','CyberArm','CyberTruck'],a:1},
+  {type:'ox',q:'Hyundai（現代自動車）はBoston Dynamicsを買収してロボット事業を強化した。',a:true},
+  {type:'4',q:'1X Technologies（旧Halodi Robotics）が開発したヒューマノイドロボットはどれか？',c:['NEO','Digit','Optimus','Atlas'],a:0},
+  {type:'ox',q:'NVIDIAはヒューマノイドロボット向けのAI開発プラットフォーム「Isaac」を提供している。',a:true},
+  {type:'4',q:'Toyota（トヨタ）が開発しているロボット研究機関はどれか？',c:['Toyota Robotics Lab','ToyoTech','Toyota Research Institute（TRI）','Toyota AI Division'],a:2},
+  {type:'ox',q:'Boston Dynamicsの「Spot」はヒューマノイドロボットではなく四足歩行ロボットだ。',a:true},
+  {type:'4',q:'Sanctuary AIが開発したヒューマノイドロボットの名前はどれか？',c:['Optimus','Atlas','NEO','Phoenix'],a:3},
+  {type:'ox',q:'ソニーはロボットダイナミクス研究に積極的に投資している。',a:true},
+  {type:'4',q:'Apptronikが開発したNASAとも協力するヒューマノイドロボットはどれか？',c:['Apollo','Atlas','Hermes','Zeus'],a:0},
+  {type:'ox',q:'Figure AIはOpenAIと提携してヒューマノイドロボットにAIを組み込む開発を行った。',a:true},
+  {type:'4',q:'中国のロボット企業「UBTECH」が開発したヒューマノイドロボットはどれか？',c:['Unitree G1','CyberOne','Tien Kung','Walker X'],a:3},
+  {type:'ox',q:'Teslaの「Optimus」は製造工場での作業を目的の一つとして開発されている。',a:true},
+  {type:'4',q:'Fourier Intelligence（傅利叶智能）が開発したヒューマノイドロボットはどれか？',c:['Phoenix','GR-1','NEO','Digit'],a:1},
+  {type:'ox',q:'Boston DynamicsのAtlasは油圧駆動から電動駆動へと移行した新バージョンが発表された。',a:true},
+  {type:'4',q:'Amazon（アマゾン）が物流倉庫での活用を進めるロボット企業はどれか？',c:['1X Technologies','Figure AI','Boston Dynamics','Agility Robotics（Digit）'],a:3},
+  {type:'ox',q:'NAOはフランスのSoftBank Robotics（旧Aldebaran）が開発した小型ヒューマノイドロボットだ。',a:true},
+  {type:'4',q:'Kawasaki（川崎重工）が開発した医療・物流向けヒューマノイドロボットはどれか？',c:['HRP-5P','SEED-X','Kaleido','Nextage'],a:2},
+  {type:'ox',q:'日本のKAWADA Industriesが開発したNEXTAGEは工場での協働作業向けヒューマノイドロボットだ。',a:true},
+],
+technology:[
+  {type:'4',q:'ヒューマノイドロボットが二足歩行を安定させるために重要な技術はどれか？',c:['クラウドコンピューティング','GPS測位','ZMP（ゼロモーメントポイント）制御','量子計算'],a:2},
+  {type:'ox',q:'「アクチュエータ」とはロボットの動作を生み出す駆動装置のことだ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの関節駆動方式として最近注目されているのはどれか？',c:['人工筋肉のみ','空圧式のみ','油圧式のみ','電動アクチュエータ（モーター）'],a:3},
+  {type:'ox',q:'「トルク」とは回転力のことで、ロボットの関節の力の強さを表す単位だ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットが物をつかむ際に使用する技術として最も重要なのはどれか？',c:['GPSセンサー','超音波センサー','赤外線センサー','力覚センサー（触覚センサー）'],a:3},
+  {type:'ox',q:'「SLAM（Simultaneous Localization and Mapping）」とは自己位置推定と地図作成を同時に行う技術だ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの「自由度（DOF）」とは何か？',c:['ロボットが持てる重量','バッテリーの容量','処理できる計算速度','独立して動かせる関節・軸の数'],a:3},
+  {type:'ox',q:'人間の腕は肩・肘・手首などを合わせると7自由度程度を持つ。',a:true},
+  {type:'4',q:'ロボットの「エンドエフェクタ」とは何か？',c:['電源管理ユニット','通信モジュール','ロボットの足の裏のセンサー','ロボットアームの先端にある手やツール部分'],a:3},
+  {type:'ox',q:'「IMU（慣性計測装置）」はロボットの姿勢や加速度を測定するセンサーだ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの歩行安定性を高めるために足裏に搭載されることが多いセンサーはどれか？',c:['カメラセンサー','WiFiアンテナ','レーザーセンサー','6軸力覚センサー'],a:3},
+  {type:'ox',q:'「バックドライバビリティ」とは外力が加わったときにモーターが受動的に動く特性で安全性に重要だ。',a:true},
+  {type:'4',q:'ロボットの「冗長性（redundancy）」とは何か？',c:['バックアップ電源を持つこと','目標達成に必要以上の自由度を持つこと','同じ動作を繰り返すこと','複数のロボットが連携すること'],a:1},
+  {type:'ox',q:'「LiDAR（ライダー）」はレーザー光を使って周囲の3D地図を作成するセンサーだ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの電源として主流となりつつある技術はどれか？',c:['燃料電池（将来的）','太陽電池のみ','鉛蓄電池','リチウムイオン電池'],a:3},
+  {type:'ox',q:'「コンプライアントアクチュエータ（弾性アクチュエータ）」は安全な人間との接触のために柔軟性を持たせた駆動装置だ。',a:true},
+  {type:'4',q:'ロボットの関節に使われる「ハーモニックドライブ」とは何か？',c:['回転速度を上げる増速機','高精度・高減速比の歯車機構','センサーの一種','電力変換装置'],a:1},
+  {type:'ox',q:'「RGB-Dカメラ」は色情報（RGB）と深度情報（Depth）を同時に取得できるカメラだ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットが段差や不整地を歩くために重要な技術はどれか？',c:['動的バランス制御とリアルタイムセンシング','高速通信のみ','静的なプログラム動作のみ','GPS誘導のみ'],a:0},
+  {type:'ox',q:'「ウォームギア」はロボットの関節によく使われる自己制動性のある歯車機構だ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの手（グリッパー）として研究されている技術はどれか？',c:['吸盤式のみ','多指ハンド（人間の手に近い形状）','固定クランプのみ','磁石式ハンドのみ'],a:1},
+  {type:'ox',q:'「BLDC（ブラシレスDCモーター）」はロボットの関節駆動によく使用される高効率モーターだ。',a:true},
+  {type:'4',q:'ロボットの「キネマティクス（運動学）」とは何を扱う学問か？',c:['ロボットに加わる力の分析','電力消費の最適化','関節角度と手先位置の幾何学的関係','通信プロトコルの設計'],a:2},
+  {type:'ox',q:'「ダイナミクス（動力学）」はロボットに加わる力とその運動を扱う学問だ。',a:true},
+  {type:'4',q:'ロボットの「ペイロード」とは何か？',c:['バッテリー容量','処理速度','通信帯域','ロボットが扱える最大負荷重量'],a:3},
+  {type:'ox',q:'「サーボモーター」は位置・速度・トルクを精密に制御できるモーターでロボットに多用される。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの二足歩行で「倒立振子モデル」が使われる理由はどれか？',c:['見た目が人間に似ているから','バッテリーを節約できるから','人間の歩行をシンプルな物理モデルで近似できるから','計算が一切不要だから'],a:2},
+  {type:'ox',q:'「力制御（force control）」は接触時の力を制御して安全・繊細な作業を可能にする技術だ。',a:true},
+],
+ai:[
+  {type:'4',q:'ヒューマノイドロボットの「模倣学習（Imitation Learning）」とはどんな技術か？',c:['設計図を読み込んで動作するプログラム','CGで動作をシミュレーションする技術','ロボットが別のロボットを模倣する技術','人間のデモンストレーションからロボットが動作を学習する技術'],a:3},
+  {type:'ox',q:'「強化学習（Reinforcement Learning）」とは報酬と罰則のフィードバックを通じてロボットが動作を改善していく手法だ。',a:true},
+  {type:'4',q:'NVIDIAが提供するロボット・シミュレーション開発環境の名称はどれか？',c:['ROS（Robot Operating System）','V-REP','Isaac Sim / Isaac Lab','Gazebo'],a:2},
+  {type:'ox',q:'「ROS（Robot Operating System）」はロボット開発に広く使われるオープンソースのソフトウェアフレームワークだ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットに「基盤モデル（Foundation Model）」を使う利点はどれか？',c:['多様なタスクに汎用的に対応できる','製造コストが下がる','バッテリーが長持ちする','処理速度が向上するだけ'],a:0},
+  {type:'ox',q:'「VLA（Vision-Language-Action）モデル」は視覚・言語・行動を統合したロボット制御AI技術だ。',a:true},
+  {type:'4',q:'ロボットの「sim-to-real transfer」とは何か？',c:['実機のデータをシミュレーションに転送すること','ロボットをオンラインで遠隔操作すること','クラウドでロボットを制御すること','シミュレーションで学習した動作を実機に移す技術'],a:3},
+  {type:'ox',q:'「物体認識（Object Recognition）」はカメラ画像から物体の種類や位置を識別するAI技術だ。',a:true},
+  {type:'4',q:'ロボットのAI制御で「Transformer（トランスフォーマー）アーキテクチャ」が注目される理由はどれか？',c:['時系列データや複雑な状況判断の処理に優れるから','計算が単純でコストが安いから','ハードウェアが不要だから','完全に誤りがないから'],a:0},
+  {type:'ox',q:'Google DeepMindの「RT-2（Robotics Transformer 2）」はロボット制御のための大規模AIモデルだ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットが「ゼロショット」でタスクをこなすとはどういう意味か？',c:['プログラムなしで動くこと','インターネットなしで動くこと','最初の試みで必ず失敗すること','事前にそのタスクを学習せずに対応できること'],a:3},
+  {type:'ox',q:'「テレオペレーション（遠隔操作）」はロボットに学習データを収集するためにも活用される。',a:true},
+  {type:'4',q:'「神経科学（Neuroscience）」がロボットAI開発に与える影響として正しいのはどれか？',c:['神経細胞をロボットに組み込む','脳の仕組みをヒントにAIアーキテクチャを設計する','医療用途のみに使用される','ロボットに人間の脳を移植する'],a:1},
+  {type:'ox',q:'「エンドツーエンド学習」とはセンサー入力から直接行動出力を学習する手法だ。',a:true},
+  {type:'4',q:'Physical Intelligence（π）が開発したロボット制御AIモデルの名称はどれか？',c:['RoboFormer','ActorNet','GPT-R','π0（pi-zero）'],a:3},
+  {type:'ox',q:'「データ拡張（Data Augmentation）」はロボット学習データを人工的に増やす技術だ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの「全身制御（Whole-Body Control）」とは何か？',c:['全身をセンサーで覆う技術','複数のロボットを同時制御する技術','ロボット全体を水に浸けて動作させる技術','全ての関節を協調させて複雑な動作を実現する制御手法'],a:3},
+  {type:'ox',q:'「SLAM（自己位置推定と地図作成）」はロボットが未知の環境を自律的にナビゲートするために使われる。',a:true},
+  {type:'4',q:'Google DeepMindの「AlphaCode」や「Gemini」の技術がロボットに応用される場合の主な用途はどれか？',c:['自然言語による指示理解と計画立案','電力消費を削減すること','製造コストを下げること','ロボットの見た目を改善すること'],a:0},
+  {type:'ox',q:'「マルチタスク学習」は一つのAIモデルで複数の異なるタスクを同時に学習する手法だ。',a:true},
+  {type:'4',q:'ロボットが「予測モデル（World Model）」を持つ利点はどれか？',c:['バッテリーが長持ちする','通信速度が上がる','見た目が良くなる','行動の結果を事前に予測して効率的に動作できる'],a:3},
+  {type:'ox',q:'「Self-supervised learning（自己教師あり学習）」はラベルなしデータから特徴を学習する技術だ。',a:true},
+  {type:'4',q:'ロボットの「Dexterous Manipulation（巧みな操作）」が難しい理由はどれか？',c:['接触力の制御と物体の物理特性への適応が複雑なため','ロボットが重すぎるから','センサーが高価すぎるから','AIの処理が遅いから'],a:0},
+  {type:'ox',q:'OpenAIはロボティクス研究部門を一時休止したが、その後再び関心を示している。',a:true},
+  {type:'4',q:'ヒューマノイドロボットに「大規模言語モデル（LLM）」を搭載する主な目的はどれか？',c:['ロボットの見た目を向上させること','歩行速度を上げること','製造コストを下げること','人間との自然な会話と複雑な指示の理解'],a:3},
+  {type:'ox',q:'「継続学習（Continual Learning）」は新しいタスクを学習しても以前の知識を忘れないようにする技術だ。',a:true},
+  {type:'4',q:'ロボットの「異常検知（Anomaly Detection）」AIの役割はどれか？',c:['製造コストを下げる','通常と異なる状況を検出して安全停止などの対応をする','通信エラーを修正する','ロボットの外観の傷を見つける'],a:1},
+  {type:'ox',q:'「Model Predictive Control（MPC）」はモデルを使って将来の状態を予測しながら制御する手法だ。',a:true},
+],
+industry:[
+  {type:'4',q:'ヒューマノイドロボットが最も早く普及すると期待されている産業分野はどれか？',c:['娯楽のみ','農業のみ','医療のみ','製造・物流（工場・倉庫）'],a:3},
+  {type:'ox',q:'Teslaのギガファクトリーでは将来的にOptimusが製造ラインで働くことが計画されている。',a:true},
+  {type:'4',q:'Agility RoboticsのDigitがAmazonの倉庫で行っているとされる主な作業はどれか？',c:['棚からの荷物の取り出し・運搬作業','農作物の収穫','食事の調理','手術補助'],a:0},
+  {type:'ox',q:'ヒューマノイドロボットは人間が作業していた環境（ツールや機械）をそのまま使えるという利点がある。',a:true},
+  {type:'4',q:'ヒューマノイドロボットが医療分野で期待される用途はどれか？',c:['医師の完全な代替','完全な外科手術の単独実施','手術補助・患者ケア・薬の搬送など','診断業務の全自動化'],a:2},
+  {type:'ox',q:'介護・高齢者施設でのヒューマノイドロボットの活用が日本では特に期待されている。',a:true},
+  {type:'4',q:'宇宙開発でヒューマノイドロボットが期待される理由はどれか？',c:['電力不要だから','重力に関係なく動けるから','体が小さいから','人間と同じツールや設備をそのまま使えるため'],a:3},
+  {type:'ox',q:'NASAはISS（国際宇宙ステーション）での作業補助としてヒューマノイドロボット「Robonaut」を開発した。',a:true},
+  {type:'4',q:'建設現場でヒューマノイドロボットが期待される作業はどれか？',c:['設計図の作成','経理業務','危険な高所作業・重量物の運搬・資材の搬入など','顧客への説明'],a:2},
+  {type:'ox',q:'農業分野でも果物の収穫や農薬散布などでヒューマノイドロボットの活用が研究されている。',a:true},
+  {type:'4',q:'ヒューマノイドロボットが小売業（スーパー・コンビニ）で期待される用途はどれか？',c:['商品の陳列・在庫管理・補充作業','店舗の設計','マーケティング戦略立案','経営判断'],a:0},
+  {type:'ox',q:'災害対応（被災地での救助活動）もヒューマノイドロボットの重要な活用分野だ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの「共存型（コラボラティブ）」利用とはどういう意味か？',c:['ロボット同士だけで作業すること','遠隔地から操作することのみ','人間と同じ空間で協力して作業すること','完全に自律して人間なしで動くこと'],a:2},
+  {type:'ox',q:'自動車工場ではすでにロボットアームが多数使われており、ヒューマノイドロボットはその延長として注目される。',a:true},
+  {type:'4',q:'ヒューマノイドロボットが家庭に普及した場合に期待される家事作業はどれか？',c:['主に金融サービス','掃除・洗濯・料理などの家事全般','法的サービス','保険の手続き'],a:1},
+  {type:'ox',q:'飲食店での配膳・調理補助にヒューマノイドロボットを活用する実証実験が始まっている。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの「リモートオペレーション（遠隔操作）」を活用することで実現できることはどれか？',c:['危険な場所での作業を安全な場所から人間が行える','ロボットが完全自律で動く','コストがゼロになる','通信が不要になる'],a:0},
+  {type:'ox',q:'電力会社の点検作業や原子力発電所での作業にもロボットの活用が期待されている。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの普及における「コスト」の課題として正しいのはどれか？',c:['すでに家電と同じ価格で買える','現時点では製造コストが非常に高く量産化が課題','コストはほとんど問題ない','電力コストのみが問題'],a:1},
+  {type:'ox',q:'Tesla（テスラ）はOptimusを将来的に2万ドル以下で販売することを目標としている（Elon Musk発言）。',a:true},
+  {type:'4',q:'「ロボット・アズ・ア・サービス（RaaS）」とはどんなビジネスモデルか？',c:['ロボットの設計サービス','ロボットの修理サービス','ロボットをレンタルして販売するモデル','ロボットを購入せずサブスクリプションで利用するモデル'],a:3},
+  {type:'ox',q:'物流分野では人手不足の深刻化がヒューマノイドロボット導入を加速させる要因になっている。',a:true},
+  {type:'4',q:'教育分野でヒューマノイドロボットが活用できる場面はどれか？',c:['カリキュラムの作成のみ','学校建設','成績評価のみ','対話型の学習支援・インタラクティブな授業補助'],a:3},
+  {type:'ox',q:'軍事・防衛分野でもヒューマノイドロボットの研究開発が進められている。',a:true},
+  {type:'4',q:'ヒューマノイドロボット市場の規模について、アナリストが予測している将来の市場規模はどれか？',c:['2030年代に数兆円〜数十兆円規模になるとの予測がある','市場規模は縮小する','100億円以下にとどまる','今後も現状維持'],a:0},
+  {type:'ox',q:'ヒューマノイドロボットの普及には電池の高エネルギー密度化が重要な技術課題の一つだ。',a:true},
+  {type:'4',q:'「デジタルツイン」とはロボット産業でどのように活用されるか？',c:['実際のロボットや環境をデジタル空間で再現してシミュレーションする技術','ロボットを2台同時に動かす技術','データをコピーしてバックアップする技術','双子のロボットを作る技術'],a:0},
+  {type:'ox',q:'セキュリティ・警備分野でもヒューマノイドロボットのパトロール活用が研究されている。',a:true},
+],
+society:[
+  {type:'4',q:'ヒューマノイドロボットの普及が雇用に与える影響として最もよく議論されることはどれか？',c:['完全に全ての雇用がなくなる','一部の職種が自動化される一方で新たな雇用も生まれる可能性','給与だけが上がる','雇用への影響は全くない'],a:1},
+  {type:'ox',q:'「ロボット税（Robot Tax）」はロボットが人間の仕事を奪った場合に企業に課税するという提案だ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの「安全規制」において重要な考え方はどれか？',c:['ロボットが人間を傷つけないための設計基準と認証制度','ロボットの名前の規則','ロボットの見た目の規制','ロボットの色の基準'],a:0},
+  {type:'ox',q:'「アシモフのロボット三原則」はSF作家アイザック・アシモフが提唱したロボット行動の倫理的ルールだ。',a:true},
+  {type:'4',q:'「不気味の谷（Uncanny Valley）」とはロボット工学でどんな現象を指すか？',c:['ロボットの表情が全くない状態','ロボットが谷を歩けない問題','ロボットが人間に似すぎると逆に不気味に感じる現象','AIが急に動作停止する現象'],a:2},
+  {type:'ox',q:'「プライバシー問題」はヒューマノイドロボットが家庭や職場に入ることで生じる重要な倫理課題だ。',a:true},
+  {type:'4',q:'「ロボット権（Robot Rights）」についての議論で主に問われていることはどれか？',c:['高度なAIを持つロボットに法的地位や権利を与えるべきかどうか','ロボットに選挙権を与えること','ロボットに感情を与えること','ロボットに財産を所有させること'],a:0},
+  {type:'ox',q:'EU（欧州連合）のAI法（AI Act）はロボットを含むAIシステムの規制を定めている。',a:true},
+  {type:'4',q:'ヒューマノイドロボットと人間の「共生」を実現するために最も重要な要素はどれか？',c:['信頼・安全性・倫理的設計と社会的受容','人間よりも高い知能を持つこと','全ての仕事を人間の代わりにできること','見た目が完全に人間と同じであること'],a:0},
+  {type:'ox',q:'日本は少子高齢化・人手不足という背景からロボット活用に対して比較的前向きな社会だ。',a:true},
+  {type:'4',q:'「責任の所在」の問題とはロボットが事故を起こした場合にどんなことが問われるか？',c:['ロボットが自分で謝罪できるか','製造者・使用者・規制当局のどこに責任があるかが不明確な点','修理費が高いか','保険が適用されるか'],a:1},
+  {type:'ox',q:'「デジタルデバイド」はロボット普及においても先進国と途上国の格差として問題になりうる。',a:true},
+  {type:'4',q:'「AIガバナンス（AI統治）」においてヒューマノイドロボットに関して特に重要な課題はどれか？',c:['自律的な判断権限の範囲と人間による監視の仕組み','ロボットの色を統一すること','製造を一国に集中させること','全ロボットを同じにすること'],a:0},
+  {type:'ox',q:'「人間中心のAI（Human-Centric AI）」は人間の価値観と幸福を中心に設計するAI倫理の考え方だ。',a:true},
+  {type:'4',q:'ヒューマノイドロボットの「軍事利用」に関する主な倫理問題はどれか？',c:['自律型致死兵器としての使用と人命に関する判断をAIに委ねる問題','修理費が高い問題','通信が途切れる問題','見た目が怖い問題'],a:0},
+  {type:'ox',q:'「バイアス（偏見）」はロボットのAIが学習データの偏りから不公平な判断をする可能性として問題視される。',a:true},
+  {type:'4',q:'「サイバーセキュリティ」がヒューマノイドロボットで特に重要な理由はどれか？',c:['データを保存するから','ハッキングされると物理的な危害を与える可能性があるため','ロボットが高価だから','インターネットが必要だから'],a:1},
+  {type:'ox',q:'「インクルーシブデザイン」はすべての人が使いやすいロボットを設計するという考え方だ。',a:true},
+  {type:'4',q:'2024年時点でヒューマノイドロボット開発において最も多くの投資・研究開発が行われている国はどれか？',c:['ドイツのみ','アメリカと中国が二大拠点として台頭','インドのみ','日本のみ'],a:1},
+  {type:'ox',q:'「持続可能性（Sustainability）」の観点からロボットの製造・廃棄における環境負荷も検討課題だ。',a:true},
+  {type:'4',q:'「ロボフォビア（Robophobia）」とは何か？',c:['ロボットへの過度な依存','ロボットに対する恐怖や拒否感','ロボット工学の専門用語','ロボットを過信すること'],a:1},
+  {type:'ox',q:'「ユニバーサルベーシックインカム（UBI）」はロボットによる雇用喪失への対策として議論されることがある。',a:true},
+  {type:'4',q:'「ヒューマノイドロボットの感情表現」において倫理的に問題視されることはどれか？',c:['ロボットが泣くこと','ロボットが声を出すこと','人間を操作・欺くために感情を偽って表現することの危険性','ロボットが笑顔になること'],a:2},
+  {type:'ox',q:'「透明性（Explainability）」はロボットAIがどのように判断したかを説明できることで信頼構築に重要だ。',a:true},
+  {type:'4',q:'「シンギュラリティ（技術的特異点）」とはAI・ロボット文脈でどんな概念か？',c:['全てのロボットが統一される日','AIが意識を持つ瞬間','ロボットが完全に自律化する日','AIが人間の知性を超えて自律的に自己改善し予測不可能になる転換点'],a:3},
+  {type:'ox',q:'「IEEE（米国電気電子学会）」はロボットとAIの倫理ガイドライン策定に取り組んでいる。',a:true},
+  {type:'4',q:'ヒューマノイドロボットが高齢者介護で普及する際の主な懸念はどれか？',c:['ロボットが重すぎること','電力が足りないこと','見た目が怖いこと','人間的なぬくもりや感情的繋がりがロボットでは代替できない可能性'],a:3},
+  {type:'ox',q:'「技術的失業（Technological Unemployment）」はロボット・AI普及による雇用減少を指す経済用語だ。',a:true},
+],
+history:[
+  {type:'4',q:'「ヒューマノイドロボット」という概念が最初に広く知られるようになった媒体はどれか？',c:['ビジネス雑誌','科学論文','政府の報告書','SF小説・映画（鉄腕アトム・R.U.R.など）'],a:3},
+  {type:'ox',q:'「R.U.R.（ロッサムの万能ロボット）」は1920年にカレル・チャペックが作った戯曲で「ロボット」という言葉の語源だ。',a:true},
+  {type:'4',q:'日本の漫画・アニメ「鉄腕アトム」を創作した人物は誰か？',c:['松本零士','手塚治虫','藤子・F・不二雄','宮崎駿'],a:1},
+  {type:'ox',q:'「鉄腕アトム」は世界のロボット研究者に大きな影響を与えたとされる。',a:true},
+  {type:'4',q:'世界初の本格的な工業用ロボット「Unimate」が開発されたのはいつか？',c:['1980年代','1960年代','2000年代','1940年代'],a:1},
+  {type:'ox',q:'Hondaが「P2」「P3」の研究を経てASIMOを完成させたのは2000年代初頭だ。',a:true},
+  {type:'4',q:'「早稲田大学」のWABOTプロジェクトはどんな成果で知られるか？',c:['2000年代に最初の感情表現ロボットを開発','1970年代に世界初の全身型ヒューマノイドロボットを開発','2010年代に最初のAIロボットを開発','1990年代に最初の二足歩行ロボットを開発'],a:1},
+  {type:'ox',q:'DARPA（米国防高等研究計画局）のロボティクスチャレンジはヒューマノイドロボット研究を大きく前進させた。',a:true},
+  {type:'4',q:'Boston Dynamicsが設立されたのはどこが母体となったか？',c:['Carnegie Mellon大学','Stanford（スタンフォード大学）','MIT（マサチューセッツ工科大学）','Caltech'],a:2},
+  {type:'ox',q:'DARPAロボティクスチャレンジ（2013〜2015年）は災害対応ロボットの技術向上を目的としていた。',a:true},
+  {type:'4',q:'「産業用ロボット」が製造業に普及し始めたのはいつ頃か？',c:['1970〜1980年代','2000年代','1990年代後半','1950年代'],a:0},
+  {type:'ox',q:'日本は長年ロボット技術の先進国として世界をリードしてきた。',a:true},
+  {type:'4',q:'「Kismet」はMITで開発された何のためのロボットか？',c:['宇宙探査用ロボット','人間との感情的なインタラクション研究のためのロボット','手術補助ロボット','工場作業用ロボット'],a:1},
+  {type:'ox',q:'「Cynthia Breazeal（シンシア・ブリジール）」はソーシャルロボット研究の先駆者だ。',a:true},
+  {type:'4',q:'2010年代にヒューマノイドロボット研究を加速させた主な要因はどれか？',c:['AIの急速な発展と計算能力の向上・コストの低下','スマートフォンの登場','石油価格の上昇','インターネットの普及'],a:0},
+  {type:'ox',q:'「DARPA（国防高等研究計画局）」はインターネットの前身ARPANETも開発した米国の研究機関だ。',a:true},
+  {type:'4',q:'Softbank Roboticsが「Pepper」を発売した年はいつか？',c:['2014〜2015年頃','2005年','2010年','2020年'],a:0},
+  {type:'ox',q:'ロボット研究における「神経科学（Neuroscience）」との融合は2000年代以降活発になった。',a:true},
+  {type:'4',q:'「生成AI（Generative AI）」の急速な発展がロボット開発に与えた主な影響はどれか？',c:['ロボットの外見改善のみ','製造コストの削減のみ','自然言語理解・視覚認識・計画立案の大幅な向上','バッテリーの改善のみ'],a:2},
+  {type:'ox',q:'2023〜2024年はヒューマノイドロボットへの投資が爆発的に増加した「ヒューマノイド元年」とも言われる。',a:true},
+  {type:'4',q:'「ChatGPT」の登場（2022年末）がロボット業界に与えた影響はどれか？',c:['センサーが安くなった','バッテリー技術が向上した','LLMをロボットの脳として活用する研究が一気に加速した','ロボットの製造コストが下がった'],a:2},
+  {type:'ox',q:'Elon Musk（イーロン・マスク）はヒューマノイドロボットが将来的に自動車より大きなビジネスになると発言している。',a:true},
+  {type:'4',q:'「MIT CSAIL（コンピュータ科学・人工知能研究所）」はロボット研究でどのような役割を担うか？',c:['世界トップレベルのロボット・AI基礎研究を行う機関','政府規制のみを担当する','ロボットの販売のみを行う','ロボットの製造のみを行う'],a:0},
+  {type:'ox',q:'「Carnegie Mellon University（CMU）」はロボット工学の世界的な研究拠点の一つだ。',a:true},
+  {type:'4',q:'ヒューマノイドロボット研究で「動的二足歩行」を最初に実用的なレベルで実現した企業はどれか？',c:['Honda（ASIMO）','Boston Dynamics','MIT','Toyota'],a:0},
+  {type:'ox',q:'「Space X」の技術者の一部がヒューマノイドロボット企業に転職・創業するケースが増えている。',a:true},
+  {type:'4',q:'近年ヒューマノイドロボット開発が急増している背景として最も大きな要因はどれか？',c:['AIの進化・製造コスト低下・人手不足の深刻化の組み合わせ','大学研究のみ','政府補助金のみ','AIのみの進化'],a:0},
+  {type:'ox',q:'「Physical Intelligence（π）」は元Google・DeepMindの研究者が創業したロボットAI企業だ。',a:true},
+],
+};
+let currentGenre=null,questions=[],qIndex=0,score=0,correctCount=0,wrongCount=0;
+let timeLeft=120,timer=null,answered=false,wrongAnswers=[],playerName='';
+let currentRankingGenre=null;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function showToast(msg,d=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+function buildGenreCards(){
+  const grid=document.getElementById('genres-grid');
+  grid.innerHTML=GENRES.map(g=>`<div class="genre-card" onclick="selectGenre('${g.id}')"><div class="genre-accent" style="background:${g.color};"></div><span class="genre-icon">${g.icon}</span><div class="genre-name">${g.name}</div><div class="genre-desc">${g.desc}</div><div class="genre-count">全${DB[g.id].length}問収録 ／ 10問ランダム出題</div><span class="genre-start">▶ START</span></div>`).join('');
+}
+function selectGenre(id){
+  currentGenre=GENRES.find(g=>g.id===id);
+  document.getElementById('intro-icon').textContent=currentGenre.icon;
+  document.getElementById('intro-name').textContent=currentGenre.name;
+  document.getElementById('intro-desc').textContent=currentGenre.desc;
+  if(window.TomyStamp){const saved=TomyStamp.getPlayer();const inp=document.getElementById('name-input');if(saved&&!inp.value)inp.value=saved;}
+  showScreen('screen-intro');
+}
+function startGame(){
+  playerName=document.getElementById('name-input').value.trim()||'ゲスト';
+  if(window.TomyStamp&&playerName!=='ゲスト')TomyStamp.setPlayer(playerName);
+  questions=shuffle(DB[currentGenre.id]).slice(0,10);
+  qIndex=0;score=0;correctCount=0;wrongCount=0;wrongAnswers=[];
+  showScreen('screen-quiz');showQuestion();startTimer();
+}
+function retryGame(){showScreen('screen-intro');}
+function startTimer(){clearInterval(timer);timeLeft=120;updateTimerDisplay();timer=setInterval(()=>{timeLeft--;updateTimerDisplay();if(timeLeft<=0){clearInterval(timer);endGame();}},1000);}
+function updateTimerDisplay(){const el=document.getElementById('quiz-timer');el.textContent=timeLeft;el.className='quiz-timer'+(timeLeft<=10?' danger':'');}
+function showQuestion(){
+  const q=questions[qIndex];answered=false;
+  document.getElementById('quiz-qnum').textContent=`Q${qIndex+1} / 10`;
+  document.getElementById('quiz-progress-fill').style.width=`${(qIndex/10)*100}%`;
+  document.getElementById('quiz-score').textContent=`${score} pt`;
+  document.getElementById('feedback-bar').className='feedback-bar';
+  document.getElementById('feedback-bar').textContent='';
+  document.getElementById('next-btn').className='next-btn';
+  if(q.type==='4'){
+    document.getElementById('quiz-type-badge').textContent='4択';
+    document.getElementById('quiz-type-badge').className='quiz-type-badge type-4';
+    document.getElementById('quiz-q').textContent=q.q;
+    const lb=['A','B','C','D'];
+    document.getElementById('quiz-choices').innerHTML=q.c.map((c,i)=>`<button class="choice-btn" onclick="answer4(${i})"><span class="choice-label">${lb[i]}</span>${c}</button>`).join('');
+  }else{
+    document.getElementById('quiz-type-badge').textContent='○×';
+    document.getElementById('quiz-type-badge').className='quiz-type-badge type-ox';
+    document.getElementById('quiz-q').textContent=q.q;
+    document.getElementById('quiz-choices').innerHTML=`<div class="ox-choices"><button class="ox-btn" onclick="answerOX(true)">⭕<span>正しい</span></button><button class="ox-btn" onclick="answerOX(false)">❌<span>誤り</span></button></div>`;
+  }
+}
+function answer4(idx){if(answered)return;answered=true;const q=questions[qIndex];const btns=document.querySelectorAll('.choice-btn');btns.forEach(b=>b.disabled=true);btns[q.a].classList.add('correct');if(idx!==q.a)btns[idx].classList.add('wrong');processAnswer(idx===q.a,q.c[q.a],q.q);}
+function answerOX(val){if(answered)return;answered=true;const q=questions[qIndex];const btns=document.querySelectorAll('.ox-btn');btns.forEach(b=>b.disabled=true);btns[q.a?0:1].classList.add('correct');if(val!==q.a)btns[val?0:1].classList.add('wrong');processAnswer(val===q.a,q.a?'○（正しい）':'×（誤り）',q.q);}
+function processAnswer(isCorrect,correctAns,qText){
+  const fb=document.getElementById('feedback-bar');
+  if(isCorrect){score+=10;correctCount++;timeLeft=Math.min(timeLeft+5,999);fb.textContent='✅ 正解！ ＋5秒';fb.className='feedback-bar ok show';}
+  else{wrongCount++;timeLeft=Math.max(timeLeft-5,0);fb.textContent=`❌ 正解は「${correctAns}」（−5秒）`;fb.className='feedback-bar ng show';wrongAnswers.push({q:qText,a:correctAns});}
+  updateTimerDisplay();document.getElementById('next-btn').className='next-btn show';
+}
+function nextQuestion(){qIndex++;if(qIndex>=10){clearInterval(timer);endGame();}else{showQuestion();}}
+function endGame(){
+  clearInterval(timer);
+  const bonus=Math.max(timeLeft,0),total=score+bonus;
+  const medal=correctCount>=9?'🥇':correctCount>=7?'🥈':correctCount>=5?'🥉':'😅';
+  document.getElementById('result-genre').textContent=currentGenre.icon+' '+currentGenre.name;
+  document.getElementById('result-score').textContent=total;
+  document.getElementById('result-medal').textContent=medal;
+  document.getElementById('result-correct').textContent=correctCount;
+  document.getElementById('result-wrong').textContent=wrongCount;
+  document.getElementById('result-bonus').textContent='+'+bonus;
+  const ws=document.getElementById('wrong-section');
+  if(wrongAnswers.length>0){ws.innerHTML=`<div class="wrong-label">// ❌ 間違えた問題（${wrongAnswers.length}問）</div>`+wrongAnswers.map((w,i)=>`<div class="wrong-item"><div class="wrong-item-num">問${i+1}</div><div class="wrong-item-q">${w.q}</div><div class="wrong-item-ans"><span class="wrong-item-ans-label">正解</span><span class="wrong-item-ans-text">${w.a}</span></div></div>`).join('');}
+  else{ws.innerHTML='<div style="text-align:center;padding:20px;font-family:\'Share Tech Mono\',monospace;font-size:12px;color:var(--cyan3);">🎉 全問正解！</div>';}
+  saveRanking(currentGenre.id,playerName,total,correctCount);
+  if(window.TomyStamp&&playerName!=='ゲスト'){TomyStamp.send('humanoid-quiz',currentGenre.name,correctCount).then(r=>{if(r.ok)showToast('⭐ スタンプ獲得！ランキングに反映されます');});}
+  showScreen('screen-result');
+}
+const LS_KEY='humanoid_quiz_ranking';
+function saveRanking(gId,name,sc,correct){const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');if(!data[gId])data[gId]=[];data[gId].push({name,score:sc,correct,date:new Date().toLocaleDateString('ja-JP')});data[gId].sort((a,b)=>b.score-a.score);data[gId]=data[gId].slice(0,20);localStorage.setItem(LS_KEY,JSON.stringify(data));}
+function showRanking(){const tabs=document.getElementById('ranking-tabs');tabs.innerHTML=GENRES.map(g=>`<button class="ranking-tab" onclick="switchRankingTab('${g.id}',this)">${g.icon} ${g.name}</button>`).join('');showScreen('screen-ranking');switchRankingTab(GENRES[0].id,tabs.querySelector('.ranking-tab'));}
+function switchRankingTab(id,btn){document.querySelectorAll('.ranking-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');currentRankingGenre=id;renderRanking(id);}
+function renderRanking(id){const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');const rows=data[id]||[];const list=document.getElementById('ranking-list');if(!rows.length){list.innerHTML='<div class="ranking-empty">// まだ記録がありません</div>';return;}list.innerHTML=rows.map((r,i)=>{const pos=i+1,pc=pos===1?'gold':pos===2?'silver':pos===3?'bronze':'';const rc=pos===1?'top1':pos===2?'top2':pos===3?'top3':'';return `<div class="ranking-row ${rc}"><span class="ranking-pos ${pc}">${pos}</span><span class="ranking-name">${r.name}</span><span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);">${r.correct}/10</span><span class="ranking-score">${r.score}</span><span class="ranking-date">${r.date}</span></div>`;}).join('');}
+function deleteRanking(){if(!currentRankingGenre)return;if(!confirm(`「${GENRES.find(g=>g.id===currentRankingGenre)?.name}」の記録を削除しますか？`))return;const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');delete data[currentRankingGenre];localStorage.setItem(LS_KEY,JSON.stringify(data));renderRanking(currentRankingGenre);}
+buildGenreCards();
+</script>
+</body>
+</html>
