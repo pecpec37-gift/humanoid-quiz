@@ -166,6 +166,25 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .portal-fixed-btn{position:fixed;bottom:20px;left:20px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(4,8,15,0.92);color:var(--cyan3);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:0.08em;border-radius:4px;border:1px solid rgba(6,182,212,0.35);text-decoration:none;backdrop-filter:blur(6px);box-shadow:0 4px 16px rgba(0,0,0,0.5);transition:all 0.15s;white-space:nowrap;}
 .portal-fixed-btn:hover{background:rgba(4,8,15,0.98);border-color:rgba(34,211,238,0.7);transform:translateY(-1px);}
 @media(max-width:480px){.genres-grid{grid-template-columns:1fr 1fr;}.result-actions{flex-direction:column;}.portal-fixed-btn{bottom:14px;left:14px;padding:8px 14px;font-size:11px;}}
+
+  /* ===== 学習メニュー ===== */
+  .study-cta{margin:0 0 20px;text-align:center;}
+  .study-btn{width:100%;max-width:520px;padding:14px 18px;background:linear-gradient(180deg,var(--cyan2),var(--cyan));color:#0a0e14;font-weight:900;font-size:15px;border:none;border-radius:6px;cursor:pointer;letter-spacing:.03em;box-shadow:0 6px 18px rgba(6,182,212,.25);transition:filter .15s,transform .1s;}
+  .study-btn:hover{filter:brightness(1.08);}
+  .study-btn:active{transform:scale(.99);}
+  .study-wrap{max-width:760px;margin:0 auto;padding:32px 20px 72px;}
+  .study-head{text-align:center;margin-bottom:22px;}
+  .study-h1{font-family:'Zen Kaku Gothic New',sans-serif;font-size:26px;font-weight:900;margin:6px 0 8px;color:var(--text);}
+  .study-lede{color:var(--text2);font-size:14px;line-height:1.7;margin:0;}
+  .study-detail-head{display:flex;align-items:center;gap:12px;justify-content:center;text-align:center;margin:8px 0 18px;}
+  .study-detail-icon{font-size:40px;line-height:1;}
+  .study-detail-name{font-size:22px;font-weight:900;}
+  .study-intro{background:linear-gradient(135deg,rgba(6,182,212,.12),rgba(124,58,237,.06));border:1px solid var(--border);border-radius:8px;padding:16px 18px;margin:0 0 16px;font-size:14px;line-height:1.85;color:var(--text);}
+  .lpoint{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:6px;padding:14px 16px;margin-bottom:12px;}
+  .lpoint .lh{display:flex;align-items:flex-start;gap:9px;font-weight:900;font-size:15px;color:var(--cyan2);line-height:1.5;}
+  .lpoint .lh .no{flex:none;min-width:24px;height:24px;border-radius:50%;background:var(--cyan);color:#0a0e14;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:900;}
+  .lpoint .lb{margin-top:8px;font-size:14px;line-height:1.85;color:var(--text2);}
+  .study-actions{margin-top:20px;display:flex;flex-direction:column;gap:10px;max-width:520px;margin-left:auto;margin-right:auto;}
 </style>
 </head>
 <body>
@@ -179,6 +198,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
   <div class="genres-wrap">
     <div class="genres-label">// ジャンルを選んでスタート</div>
     <div class="genres-hint">👆 カードをクリックするとすぐに始められます</div>
+    <div class="study-cta"><button class="study-btn" onclick="openStudy()">📖 学習メニュー（概要と解説を読む）</button></div>
     <div class="genres-grid" id="genres-grid"></div>
     <div class="ranking-btn-wrap"><button class="ranking-btn" onclick="showRanking()">🏆 スコアランキングを見る</button></div>
   </div>
@@ -239,6 +259,34 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
     <div style="text-align:center;margin-top:16px;"><button class="ranking-del" onclick="deleteRanking()">🗑️ このジャンルの記録を削除</button></div>
   </div>
 </div>
+<!-- ===== STUDY (list) ===== -->
+<div id="screen-study" class="screen">
+  <div class="study-wrap">
+    <div class="study-head">
+      <div class="top-eyebrow">Study // 学習メニュー</div>
+      <h2 class="study-h1">📖 ヒューマノイドロボットを学ぶ</h2>
+      <p class="study-lede">ジャンルを選んで、概要と解説を読もう。読んでから挑戦すると高得点をねらえます。</p>
+    </div>
+    <div class="genres-grid" id="study-grid"></div>
+    <div class="ranking-btn-wrap"><button class="ranking-btn" onclick="showScreen('screen-top')">← トップへ戻る</button></div>
+  </div>
+</div>
+
+<!-- ===== STUDY (detail) ===== -->
+<div id="screen-studyDetail" class="screen">
+  <div class="study-wrap">
+    <div class="study-detail-head">
+      <span class="study-detail-icon" id="study-icon">🤖</span>
+      <div class="study-detail-name" id="study-name">ジャンル</div>
+    </div>
+    <div id="study-body"></div>
+    <div class="study-actions">
+      <button class="start-btn" id="study-quiz-btn">🎯 このジャンルのクイズに挑戦</button>
+      <button class="back-link" onclick="openStudy()">← 学習メニューへ戻る</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 <a class="portal-fixed-btn" href="https://pecpec37-gift.github.io/portal/">← とみやんのゲームランド</a>
 <script>
@@ -271,7 +319,7 @@ robots:[
   {type:'4',q:'Sanctuary AIが開発したヒューマノイドロボットの名前はどれか？',c:['Optimus','Atlas','NEO','Phoenix'],a:3},
   {type:'ox',q:'ソニーはロボットダイナミクス研究に積極的に投資している。',a:true},
   {type:'4',q:'Apptronikが開発したNASAとも協力するヒューマノイドロボットはどれか？',c:['Apollo','Atlas','Hermes','Zeus'],a:0},
-  {type:'ox',q:'Figure AIはOpenAIと提携してヒューマノイドロボットにAIを組み込む開発を行った。',a:true},
+  {type:'ox',q:'Figure AIは2025年にOpenAIとの提携を解消し、自社開発のAIモデル「Helix」を発表した。',a:true},
   {type:'4',q:'中国のロボット企業「UBTECH」が開発したヒューマノイドロボットはどれか？',c:['Unitree G1','CyberOne','Tien Kung','Walker X'],a:3},
   {type:'ox',q:'Teslaの「Optimus」は製造工場での作業を目的の一つとして開発されている。',a:true},
   {type:'4',q:'Fourier Intelligence（傅利叶智能）が開発したヒューマノイドロボットはどれか？',c:['Phoenix','GR-1','NEO','Digit'],a:1},
@@ -280,6 +328,9 @@ robots:[
   {type:'ox',q:'NAOはフランスのSoftBank Robotics（旧Aldebaran）が開発した小型ヒューマノイドロボットだ。',a:true},
   {type:'4',q:'Kawasaki（川崎重工）が開発した医療・物流向けヒューマノイドロボットはどれか？',c:['HRP-5P','SEED-X','Kaleido','Nextage'],a:2},
   {type:'ox',q:'日本のKAWADA Industriesが開発したNEXTAGEは工場での協働作業向けヒューマノイドロボットだ。',a:true},
+  {type:'4',q:'Figure AIが2025年に発表した、量産と家庭利用を見据えた第3世代ヒューマノイドはどれか？',c:['Figure 03','Figure 01','ASIMO','Digit'],a:0},
+  {type:'ox',q:'中国Unitreeの小型ヒューマノイド「G1」は、約1.6万ドルと比較的低価格なことで注目された。',a:true},
+  {type:'ox',q:'Teslaは2025〜2026年にかけて、手を刷新した新世代「Optimus Gen 3」の開発・量産を進めている。',a:true},
 ],
 technology:[
   {type:'4',q:'ヒューマノイドロボットが二足歩行を安定させるために重要な技術はどれか？',c:['クラウドコンピューティング','GPS測位','ZMP（ゼロモーメントポイント）制御','量子計算'],a:2},
@@ -310,6 +361,7 @@ technology:[
   {type:'ox',q:'「サーボモーター」は位置・速度・トルクを精密に制御できるモーターでロボットに多用される。',a:true},
   {type:'4',q:'ヒューマノイドロボットの二足歩行で「倒立振子モデル」が使われる理由はどれか？',c:['見た目が人間に似ているから','バッテリーを節約できるから','人間の歩行をシンプルな物理モデルで近似できるから','計算が一切不要だから'],a:2},
   {type:'ox',q:'「力制御（force control）」は接触時の力を制御して安全・繊細な作業を可能にする技術だ。',a:true},
+  {type:'4',q:'ロボット上でAIをリアルタイムに実行するために使われる、NVIDIAのオンボード演算基盤（ロボット用コンピュータ）はどれか？',c:['Jetson Thor','GeForce RTX','Tegra X1','Quadro'],a:0},
 ],
 ai:[
   {type:'4',q:'ヒューマノイドロボットの「模倣学習（Imitation Learning）」とはどんな技術か？',c:['設計図を読み込んで動作するプログラム','CGで動作をシミュレーションする技術','ロボットが別のロボットを模倣する技術','人間のデモンストレーションからロボットが動作を学習する技術'],a:3},
@@ -340,6 +392,9 @@ ai:[
   {type:'ox',q:'「継続学習（Continual Learning）」は新しいタスクを学習しても以前の知識を忘れないようにする技術だ。',a:true},
   {type:'4',q:'ロボットの「異常検知（Anomaly Detection）」AIの役割はどれか？',c:['製造コストを下げる','通常と異なる状況を検出して安全停止などの対応をする','通信エラーを修正する','ロボットの外観の傷を見つける'],a:1},
   {type:'ox',q:'「Model Predictive Control（MPC）」はモデルを使って将来の状態を予測しながら制御する手法だ。',a:true},
+  {type:'4',q:'NVIDIAが2025年に公開した、世界初のオープンなヒューマノイド向け基盤モデルはどれか？',c:['Isaac GR00T N1','ROS 2','Gazebo','MuJoCo'],a:0},
+  {type:'ox',q:'Figure AIの「Helix」は、視覚・言語・行動を統合したVLAモデルで、ヒューマノイドの上半身などを高頻度に制御できる。',a:true},
+  {type:'ox',q:'Google DeepMindは2025年、ロボット制御向けのVLAモデル「Gemini Robotics」を発表した。',a:true},
 ],
 industry:[
   {type:'4',q:'ヒューマノイドロボットが最も早く普及すると期待されている産業分野はどれか？',c:['娯楽のみ','農業のみ','医療のみ','製造・物流（工場・倉庫）'],a:3},
@@ -370,6 +425,7 @@ industry:[
   {type:'ox',q:'ヒューマノイドロボットの普及には電池の高エネルギー密度化が重要な技術課題の一つだ。',a:true},
   {type:'4',q:'「デジタルツイン」とはロボット産業でどのように活用されるか？',c:['実際のロボットや環境をデジタル空間で再現してシミュレーションする技術','ロボットを2台同時に動かす技術','データをコピーしてバックアップする技術','双子のロボットを作る技術'],a:0},
   {type:'ox',q:'セキュリティ・警備分野でもヒューマノイドロボットのパトロール活用が研究されている。',a:true},
+  {type:'ox',q:'2025〜2026年には、FigureのロボットがBMWの工場、Agility RoboticsのDigitがAmazonの倉庫などで実際に運用・試験された。',a:true},
 ],
 society:[
   {type:'4',q:'ヒューマノイドロボットの普及が雇用に与える影響として最もよく議論されることはどれか？',c:['完全に全ての雇用がなくなる','一部の職種が自動化される一方で新たな雇用も生まれる可能性','給与だけが上がる','雇用への影響は全くない'],a:1},
@@ -390,7 +446,7 @@ society:[
   {type:'ox',q:'「バイアス（偏見）」はロボットのAIが学習データの偏りから不公平な判断をする可能性として問題視される。',a:true},
   {type:'4',q:'「サイバーセキュリティ」がヒューマノイドロボットで特に重要な理由はどれか？',c:['データを保存するから','ハッキングされると物理的な危害を与える可能性があるため','ロボットが高価だから','インターネットが必要だから'],a:1},
   {type:'ox',q:'「インクルーシブデザイン」はすべての人が使いやすいロボットを設計するという考え方だ。',a:true},
-  {type:'4',q:'2024年時点でヒューマノイドロボット開発において最も多くの投資・研究開発が行われている国はどれか？',c:['ドイツのみ','アメリカと中国が二大拠点として台頭','インドのみ','日本のみ'],a:1},
+  {type:'4',q:'近年、ヒューマノイドロボット開発において最も多くの投資・研究開発が行われている二大拠点はどこか？',c:['ドイツとフランス','アメリカと中国','インドとブラジル','日本と韓国'],a:1},
   {type:'ox',q:'「持続可能性（Sustainability）」の観点からロボットの製造・廃棄における環境負荷も検討課題だ。',a:true},
   {type:'4',q:'「ロボフォビア（Robophobia）」とは何か？',c:['ロボットへの過度な依存','ロボットに対する恐怖や拒否感','ロボット工学の専門用語','ロボットを過信すること'],a:1},
   {type:'ox',q:'「ユニバーサルベーシックインカム（UBI）」はロボットによる雇用喪失への対策として議論されることがある。',a:true},
@@ -428,6 +484,7 @@ history:[
   {type:'ox',q:'「Carnegie Mellon University（CMU）」はロボット工学の世界的な研究拠点の一つだ。',a:true},
   {type:'4',q:'ヒューマノイドロボット研究で「動的二足歩行」を最初に実用的なレベルで実現した企業はどれか？',c:['Honda（ASIMO）','Boston Dynamics','MIT','Toyota'],a:0},
   {type:'ox',q:'「Space X」の技術者の一部がヒューマノイドロボット企業に転職・創業するケースが増えている。',a:true},
+  {type:'ox',q:'2025年4月、北京で世界初のヒューマノイドロボットのハーフマラソンが開催され、「天工（Tiangong）Ultra」が優勝した。',a:true},
   {type:'4',q:'近年ヒューマノイドロボット開発が急増している背景として最も大きな要因はどれか？',c:['AIの進化・製造コスト低下・人手不足の深刻化の組み合わせ','大学研究のみ','政府補助金のみ','AIのみの進化'],a:0},
   {type:'ox',q:'「Physical Intelligence（π）」は元Google・DeepMindの研究者が創業したロボットAI企業だ。',a:true},
 ],
@@ -513,7 +570,40 @@ function showRanking(){const tabs=document.getElementById('ranking-tabs');tabs.i
 function switchRankingTab(id,btn){document.querySelectorAll('.ranking-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');currentRankingGenre=id;renderRanking(id);}
 function renderRanking(id){const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');const rows=data[id]||[];const list=document.getElementById('ranking-list');if(!rows.length){list.innerHTML='<div class="ranking-empty">// まだ記録がありません</div>';return;}list.innerHTML=rows.map((r,i)=>{const pos=i+1,pc=pos===1?'gold':pos===2?'silver':pos===3?'bronze':'';const rc=pos===1?'top1':pos===2?'top2':pos===3?'top3':'';return `<div class="ranking-row ${rc}"><span class="ranking-pos ${pc}">${pos}</span><span class="ranking-name">${r.name}</span><span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);">${r.correct}/10</span><span class="ranking-score">${r.score}</span><span class="ranking-date">${r.date}</span></div>`;}).join('');}
 function deleteRanking(){if(!currentRankingGenre)return;if(!confirm(`「${GENRES.find(g=>g.id===currentRankingGenre)?.name}」の記録を削除しますか？`))return;const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');delete data[currentRankingGenre];localStorage.setItem(LS_KEY,JSON.stringify(data));renderRanking(currentRankingGenre);}
+
+// ===== 学習メニュー =====
+const STUDY = {"robots": {"intro": "世界中の企業がヒューマノイド開発にしのぎを削っています。主要ロボットと開発企業、そして2025〜2026年の最新動向を押さえましょう。", "points": [{"h": "Boston Dynamics「Atlas」", "b": "高い運動能力で知られるヒューマノイド。2024年に油圧式を引退し、全電動の新型Atlasへ移行しました。四足歩行の「Spot」とは別物です。現代自動車（Hyundai）傘下で、Hyundai工場などでの実運用が進んでいます。"}, {"h": "Tesla「Optimus」", "b": "工場作業などを目的に開発中。手を刷新した新世代「Optimus Gen 3」を2025〜2026年に開発・量産し、まずTesla自社工場で運用しています。イーロン・マスクは量産時に2万ドル程度の価格を目標に掲げています。"}, {"h": "Figure AI「Figure」", "b": "Figure 01→02→03と進化。2025年にOpenAIとの提携を解消し、自社製VLAモデル「Helix」を発表しました。第3世代のFigure 03（2025年）はBMWの工場ラインで稼働しています。"}, {"h": "中国勢の台頭", "b": "Unitreeの「G1」は約1.6万ドルと低価格で注目。ほかにUBTECH、Xiaomiの「CyberOne」、Fourierの「GR-1」、AgiBotなど多数。政府支援も背景に、アメリカと並ぶ二大拠点になっています。"}, {"h": "物流・家庭向け", "b": "Agility Roboticsの「Digit」は物流向けで、Amazonの倉庫でも試験。1X（旧Halodi）の「NEO」は家庭向けを志向。Apptronikの「Apollo」はNASAやGoogle DeepMindとも協力しています。"}, {"h": "日本の歩み", "b": "Hondaの「ASIMO」（2000年発表）は世界的に有名。ソフトバンクの「Pepper」、川崎重工の「Kaleido」、KAWADAの「NEXTAGE」など、日本にも多彩なロボットがあります。"}, {"h": "AI企業との連携", "b": "NVIDIAはロボット向けAI開発基盤「Isaac」や、ロボット上でAIを動かす演算基盤「Jetson Thor」を提供。ロボット本体とAIの両輪で、開発が加速しています。"}]}, "technology": {"intro": "二足歩行や器用な手の動きを支えるのは、アクチュエータ・センサー・制御の技術です。ヒューマノイドを動かす仕組みの基礎を押さえましょう。", "points": [{"h": "二足歩行の制御", "b": "安定した二足歩行には「ZMP（ゼロモーメントポイント）制御」や、人の歩行を単純な物理で近似する「倒立振子モデル」が使われます。段差や不整地では、動的バランス制御とリアルタイムのセンシングが重要です。"}, {"h": "アクチュエータ", "b": "動作を生み出す駆動装置が「アクチュエータ」。近年は電動（モーター）が主流で、高効率なBLDC（ブラシレスDCモーター）やサーボモーターが多用されます。安全な接触のための弾性アクチュエータもあります。"}, {"h": "減速機と関節", "b": "高精度・高減速比の「ハーモニックドライブ」など、歯車機構が関節の要です。外力でモーターが受動的に動く「バックドライバビリティ」は安全性に重要。「自由度（DOF）」は独立して動かせる関節・軸の数を指します。"}, {"h": "センサー", "b": "姿勢や加速度を測る「IMU（慣性計測装置）」、周囲を3D計測する「LiDAR」、色＋深度の「RGB-Dカメラ」、物をつかむ「力覚（触覚）センサー」、足裏の「6軸力覚センサー」など、多様なセンサーで環境を認識します。"}, {"h": "手（グリッパー）", "b": "人の手に近い「多指ハンド」の研究が進み、器用な操作（Dexterous Manipulation）が課題です。ロボットアームの先端にある手やツール部分を「エンドエフェクタ」と呼びます。"}, {"h": "制御と運動学", "b": "関節角度と手先位置の関係を扱う「運動学（キネマティクス）」、力と運動を扱う「動力学（ダイナミクス）」、接触時の力を扱う「力制御」など。全身の関節を協調させる「全身制御」も重要です。"}, {"h": "電源", "b": "現在はリチウムイオン電池が主流。稼働時間（数十分〜数時間）を延ばす高エネルギー密度化が、普及に向けた大きな技術課題になっています。"}]}, "ai": {"intro": "2020年代のヒューマノイドを一変させたのがAIの進化です。学習手法や基盤モデル、VLAといった「ロボットの頭脳」を支える技術を学びましょう。", "points": [{"h": "学習の手法", "b": "人のお手本から学ぶ「模倣学習」、報酬と罰で改善する「強化学習」、センサー入力から直接行動を出す「エンドツーエンド学習」など。遠隔操作（テレオペレーション）は、学習データの収集にも使われます。"}, {"h": "シミュレーションとsim-to-real", "b": "仮想環境で学び実機へ移す「sim-to-real」が主流。NVIDIAの「Isaac Sim / Isaac Lab」やオープンソースの「ROS」が広く使われ、実機と環境をデジタルで再現する「デジタルツイン」も活用されます。"}, {"h": "基盤モデルとVLA", "b": "多様なタスクに汎用対応する「基盤モデル（Foundation Model）」が鍵。視覚・言語・行動を統合した「VLA（Vision-Language-Action）モデル」が、ロボットを賢くしています。"}, {"h": "最新の基盤モデル", "b": "NVIDIAは2025年、世界初のオープンなヒューマノイド向け基盤モデル「Isaac GR00T N1」を公開。Figureの「Helix」やGoogle DeepMindの「Gemini Robotics」「RT-2」など、各社がVLA開発を競っています。"}, {"h": "LLM・生成AIの活用", "b": "ChatGPTの登場（2022年末）以降、LLMを「ロボットの脳」に使う研究が加速。自然言語の指示理解や計画立案、事前学習なしで対応する「ゼロショット」が現実味を帯びました。"}, {"h": "高度な制御", "b": "将来の状態を予測して動く「World Model」や「MPC（モデル予測制御）」、複数タスクを1モデルで学ぶ「マルチタスク学習」、ラベルなしデータから学ぶ「自己教師あり学習」など、多彩な手法が使われます。"}, {"h": "難しさの核心", "b": "接触力の制御や、物体の物理特性への適応が複雑なため、「巧みな操作（Dexterous Manipulation）」は依然として大きな挑戦です。"}]}, "industry": {"intro": "ヒューマノイドは「人間の環境やツールをそのまま使える」のが強みです。工場・物流から医療・宇宙・家庭まで、期待される活用分野を整理しましょう。", "points": [{"h": "製造・物流が先行", "b": "最も早い普及先は工場・倉庫。TeslaはOptimusを自社工場で、Agility RoboticsのDigitはAmazonの倉庫で試験しています。2025〜2026年には、FigureのロボットがBMWの工場ラインで稼働するなど、実運用が始まっています。"}, {"h": "人手不足への対応", "b": "物流や介護など人手不足の深刻化が導入を後押し。日本では特に、高齢者介護・施設での活用が期待されています。人間の作業環境をそのまま使えることが、導入のしやすさにつながります。"}, {"h": "医療・宇宙・災害", "b": "医療では手術補助・患者ケア・薬の搬送など。宇宙では人間と同じ設備を使えるため有望で、NASAは「Robonaut」を開発しました。災害対応（被災地での救助）も重要分野です。"}, {"h": "家庭・サービス", "b": "家庭では掃除・洗濯・料理などの家事、店舗では陳列・在庫管理、飲食では配膳・調理補助の実証が進行中。教育の学習支援や、警備パトロールも研究されています。"}, {"h": "ビジネスモデル", "b": "購入せずサブスクで使う「RaaS（Robot as a Service）」が注目。危険な場所を安全な場所から操作する「遠隔操作」も、点検や原発作業などでの活用が期待されます。"}, {"h": "コストと市場", "b": "現時点では製造コストが高く、量産化が普及の鍵。Teslaは将来2万ドル以下を目標に掲げます。市場規模は2030〜2040年代に数兆円〜数十兆円規模になるとの予測もあります。"}, {"h": "技術課題", "b": "電池の高エネルギー密度化（稼働時間）や、器用な手の操作の信頼性向上が普及のカギ。「デジタルツイン」でのシミュレーションが開発を支えています。"}]}, "society": {"intro": "ヒューマノイドが社会に入ると、雇用・安全・倫理などさまざまな論点が生まれます。人とロボットの共生に向けた課題を考えましょう。", "points": [{"h": "雇用への影響", "b": "一部の職種が自動化される一方、新たな雇用が生まれる可能性も。ロボットが仕事を奪った企業に課税する「ロボット税」や、雇用喪失対策としての「ベーシックインカム（UBI）」も議論されます（技術的失業）。"}, {"h": "安全と規制", "b": "人を傷つけない設計基準と認証が重要です。SF作家アシモフの「ロボット三原則」は倫理的ルールの古典。2024年に成立したEUのAI法（AI Act）は、リスクに応じてAIを規制する包括的な枠組みとして知られます。"}, {"h": "責任と統治", "b": "事故時に製造者・使用者・規制当局の誰に責任があるかが論点。自律判断の範囲と人による監視を定める「AIガバナンス」、判断の根拠を説明できる「透明性（Explainability）」が信頼構築に重要です。"}, {"h": "倫理的な懸念", "b": "人に似すぎると逆に不気味に感じる「不気味の谷」、学習データの偏りによる「バイアス」、感情を偽って人を欺く危険、高度AIに法的地位を与えるかという「ロボット権」など、多くの論点があります。"}, {"h": "プライバシーと安全保障", "b": "家庭・職場に入ることでのプライバシー問題、ハッキングが物理的な危害につながる「サイバーセキュリティ」、自律型致死兵器などの軍事利用は、特に重い課題です。"}, {"h": "人間中心の設計", "b": "人の価値観と幸福を中心に据える「人間中心のAI」、誰もが使いやすい「インクルーシブデザイン」、環境負荷を考える「持続可能性」が重視されます。介護では、人間的なぬくもりを代替できるかも問われます。"}, {"h": "日本と世界の立ち位置", "b": "少子高齢化・人手不足を背景に、日本はロボット活用に比較的前向きです。開発投資は近年、アメリカと中国が二大拠点として台頭。IEEEなどが倫理ガイドラインの策定に取り組んでいます。"}]}, "history": {"intro": "「ロボット」の語源から現代の“ヒューマノイド元年”まで。開発の歴史をたどると、いまの急速な進化の背景が見えてきます。", "points": [{"h": "「ロボット」の語源", "b": "1920年のカレル・チャペックの戯曲「R.U.R.（ロッサムの万能ロボット）」が語源です。手塚治虫の「鉄腕アトム」など、SF小説・アニメがロボット像を広め、研究者にも影響を与えました。"}, {"h": "産業用ロボットの登場", "b": "世界初の本格的な工業用ロボット「Unimate」は1960年代に開発。産業用ロボットは1970〜80年代に製造業へ普及し、日本は長年ロボット先進国として世界をリードしてきました。"}, {"h": "二足歩行の実現", "b": "早稲田大学のWABOTは1970年代に世界初の全身型ヒューマノイドを開発。Hondaは「P2」「P3」を経て2000年代初頭にASIMOを完成させ、動的二足歩行を実用レベルで実現しました。"}, {"h": "研究を前進させた出来事", "b": "DARPA（米国防高等研究計画局）のロボティクスチャレンジ（2013〜2015年）は、災害対応ロボットの技術を大きく前進させました。MIT CSAILやCarnegie Mellon（CMU）は世界的な研究拠点です。"}, {"h": "ソーシャルロボット", "b": "MITの「Kismet」は人との感情的なやり取りを研究するロボットで、シンシア・ブリジールが先駆者。人と関わるソーシャルロボットの流れも、この頃に生まれました。"}, {"h": "AIブームと“ヒューマノイド元年”", "b": "2010年代、AIの急速な発展・計算能力の向上・コスト低下が研究を加速。ChatGPTの登場（2022年末）でLLMを脳に使う研究が一気に進み、2023〜2024年は投資が爆発的に増えた「ヒューマノイド元年」とも呼ばれます。"}, {"h": "実運用への転換", "b": "2025年4月、北京で世界初のヒューマノイド・ハーフマラソンが開催され、「天工（Tiangong）Ultra」が優勝。2025〜2026年は、工場・倉庫での実運用が本格化した「デモから実装へ」の転換点となりました。"}]}};
+function _escStudy(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function buildStudyCards(){
+  const grid=document.getElementById('study-grid');
+  grid.innerHTML=GENRES.map(g=>{
+    const n=(STUDY[g.id]&&STUDY[g.id].points)?STUDY[g.id].points.length:0;
+    return '<div class="genre-card" onclick="showStudyGenre(\''+g.id+'\')">'
+      +'<div class="genre-accent" style="background:'+g.color+';"></div>'
+      +'<span class="genre-icon">'+g.icon+'</span>'
+      +'<div class="genre-name">'+g.name+'</div>'
+      +'<div class="genre-desc">'+g.desc+'</div>'
+      +'<div class="genre-count">解説 '+n+' トピック</div>'
+      +'<span class="genre-start">▶ 読む</span></div>';
+  }).join('');
+}
+function openStudy(){ if(typeof hideToast==='function')hideToast(); showScreen('screen-study'); }
+function showStudyGenre(id){
+  const g=GENRES.find(x=>x.id===id); const d=STUDY[id];
+  document.getElementById('study-icon').textContent=g.icon;
+  document.getElementById('study-name').textContent=g.name;
+  let html='';
+  if(d&&d.intro) html+='<div class="study-intro">'+_escStudy(d.intro)+'</div>';
+  if(d&&d.points) d.points.forEach((p,i)=>{
+    html+='<div class="lpoint"><div class="lh"><span class="no">'+(i+1)+'</span><span>'+_escStudy(p.h)+'</span></div><div class="lb">'+_escStudy(p.b)+'</div></div>';
+  });
+  document.getElementById('study-body').innerHTML=html;
+  document.getElementById('study-quiz-btn').onclick=()=>selectGenre(id);
+  showScreen('screen-studyDetail');
+}
+
 buildGenreCards();
+buildStudyCards();
 </script>
 </body>
 </html>
